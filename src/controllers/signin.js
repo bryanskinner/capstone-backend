@@ -13,11 +13,22 @@ const signin = (req, res) => {
      [email],
       async (err, user, fields) => {
 
+        if(err) {
+          return res.json({
+             err, message: "sql err",
+           });
+         }
+
+
    const hashedPassword = await bcrypt.compare(password, user[0].password);
 
     
     if (hashedPassword) {
-    const token = jwt.sign(user[0], process.env.DB_JWT_SECRET);
+      console.log(user);
+    const token = jwt.sign({
+      id: user[0].id, 
+      email: user[0].password,
+    }, process.env.DB_JWT_SECRET);
 
     
     res.json({
